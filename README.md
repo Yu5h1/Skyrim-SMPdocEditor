@@ -2,8 +2,8 @@
 A kludges of SMP doc
 
 
-Libraries used:
+**Libraries used:**
 
-opparco's NiDump
+* opparco's NiDump
 
-Yu5h1's WPFExtension
+* Yu5h1's WPFExtension
