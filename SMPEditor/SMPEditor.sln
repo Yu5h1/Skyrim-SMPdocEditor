@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.1000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMPEditor", "SMPEditor\SMPEditor.csproj", "{4B152CDD-6798-4621-B018-657384989BFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiDump", "..\NiDump\NiDump.csproj", "{62ADEDE7-C083-4A6A-99C3-9CA95D650ED7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiDump", "..\..\NiDump\NiDump.csproj", "{62ADEDE7-C083-4A6A-99C3-9CA95D650ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

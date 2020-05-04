@@ -10,15 +10,20 @@ using System.Xml.Linq;
 using NiDump;
 using Int32 = System.Int32;
 using Yu5h1Tools.WPFExtension;
+using System.Windows.Input;
 
 namespace SMPEditor
 {
+    public class testNode{
+        public string name = "";
+        public List<testNode> children = new List<testNode>();
+    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        
         List<TreeViewItem> selectedNodes { get { return treeView.selectedNodes; } }
 
         public MainWindow()
@@ -26,7 +31,6 @@ namespace SMPEditor
             
             InitializeComponent();
         }
-
         TreeViewItem CreateTreeNodes(NiHeader hdr, int nodeIndex) {
             if (nodeIndex >= hdr.blocks.Length) {
                 MessageBox.Show("Node ("+nodeIndex.ToString()+") out of range.");
@@ -40,18 +44,43 @@ namespace SMPEditor
             catch (Exception)
             {
                 return null;
-            }            
+            }
+
             TreeViewItem branch = new TreeViewItem();
-            branch.Header = hdr.GetNiNodeName(nodeIndex);
-            if (node.children.Length > 0)
+            var textblock = new TextBlock() { Text = hdr.GetNiNodeName(nodeIndex) };
+            textblock.Tag = branch;
+            branch.Header = textblock;
+            textblock.MouseUp += (s, e) =>
+            {
+                if (InputEx.KeysDown(Key.LeftCtrl, Key.LeftShift))
+                {
+                    var treeNode = ((TextBlock)s).Tag as TreeViewItem;
+                    treeView.SelectAllChildren(treeNode, true);
+                }
+            };
+
+            if (node != null && node.children.Length > 0)
             {
                 foreach (var childIndex in node.children)
                 {
-                    branch.Items.Add(CreateTreeNodes(hdr, childIndex));
+                    var subBranch = CreateTreeNodes(hdr, childIndex);
+                    if (subBranch != null)
+                        branch.Items.Add(subBranch);
                 }
             }
             return branch;
         }
+        private void NifSelector_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (File.Exists(NifSelector.text))
+            {
+                var hdr = NiHeader.Load(NifSelector.text);
+                treeView.Items.Clear();
+                treeView.Items.Add(CreateTreeNodes(hdr, 0));
+
+            }
+        }
+
 
         public string GetNodeName(NiHeader hdr,Int32 string_ref)
         {
@@ -60,7 +89,9 @@ namespace SMPEditor
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //NifSelector.text = @"G:\Hentai\The Elder Scrolls\TESV\Data\meshes\Coco_Cloths\Sinoalice_WS\skirt_0.nif";
+            if (App.Args.Length > 0) {
+                NifSelector.text = App.Args[0];                
+            }
         }
 
         
@@ -85,6 +116,7 @@ namespace SMPEditor
         }
         private void Add_btn_Click(object sender, RoutedEventArgs e)
         {
+          
             string result = "";
             switch (comboBox.SelectedItem.ToString())
             {
@@ -93,7 +125,7 @@ namespace SMPEditor
                     foreach (var node in selectedNodes)
                     {
                         XElement xele = new XElement("bone");
-                        xele.SetAttributeValue("name", node.Header);
+                        xele.SetAttributeValue("name", ((TextBlock)node.Header).Text);
                         result += xele.ToString() + "\n";
                     }
                     break;
@@ -106,8 +138,10 @@ namespace SMPEditor
                         {
                             var next = curNode.Items[0] as TreeViewItem;
                             var ele = new XElement("generic-constraint");
-                            ele.SetAttributeValue("bodyA", next.Header);
-                            ele.SetAttributeValue("bodyB", curNode.Header);
+
+                            
+                            ele.SetAttributeValue("bodyA", ((TextBlock)next.Header).Text);
+                            ele.SetAttributeValue("bodyB", ((TextBlock)curNode.Header).Text);
                             constraintgroup.Add(ele);
                             curNode = next;
                         }
@@ -130,34 +164,30 @@ namespace SMPEditor
                             return;
                         }
                         List<string> curBones = new List<string>();
-                        curBones.Add(node.Header.ToString());
+                        curBones.Add(((TextBlock)node.Header).Text);
                         var curNode = node;
                         while (curNode.Items.Count > 0)
                         {
                             var next = curNode.Items[0] as TreeViewItem;
-                            curBones.Add(next.Header.ToString());                            
+                            curBones.Add(((TextBlock)next.Header).Text);                           
                             curNode = next;
                         }
                         bunchOfBones.Add(curBones);
                     }
                     for (int i = 0; i < bunchOfBones.Count; i++)
                     {
-
                         if (i + 1 < bunchOfBones.Count) {
-                            if (bunchOfBones[i].Count != bunchOfBones[i + 1].Count) {
-                                showWarnning("children count are inconsistent");
-                                return;
-                            }
                             for (int o = 0; o < bunchOfBones[i].Count; o++)
                             {
-                                var ele = new XElement("generic-constraint");
-                                ele.SetAttributeValue("bodyA", bunchOfBones[i + 1][o]);
-                                ele.SetAttributeValue("bodyB", bunchOfBones[i][o]);
-                                result += ele.ToString() + "\n";
+                                if (bunchOfBones[i + 1].Count > o && bunchOfBones[i].Count > o)
+                                {
+                                    var ele = new XElement("generic-constraint");
+                                    ele.SetAttributeValue("bodyA", bunchOfBones[i + 1][o]);
+                                    ele.SetAttributeValue("bodyB", bunchOfBones[i][o]);
+                                    result += ele.ToString() + "\n";
+                                }
                             }
-                            result += "\n";
                         }
-  
                     }
                     break;
                 case "generic-constraint-default":
@@ -181,6 +211,8 @@ namespace SMPEditor
             }
 
             InsertTextbox(result);
+            treeView.Items.Refresh();
+            treeView.UpdateLayout();
         }
         XElement Vector3Element(string name) {
             XElement ele = new XElement(name);
@@ -189,23 +221,15 @@ namespace SMPEditor
             ele.SetAttributeValue("z", 0);
             return ele;
         }
+
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            
+
         }
 
         private void Clear_btn_Click(object sender, RoutedEventArgs e)
         {
             textBox.Text = "";
-        }
-
-        private void NifSelector_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (File.Exists(NifSelector.text)) {
-                var hdr = NiHeader.Load(NifSelector.text);
-                treeView.Items.Clear();
-                treeView.Items.Add(CreateTreeNodes(hdr, 0));
-            }
         }
 
         public static bool Match(string searchText, string target)
@@ -225,12 +249,17 @@ namespace SMPEditor
 
             foreach (var item in treeView.GetAllTreeViewItems(true))
             {
-                if (SearchBar.Match(searchTextBox.Text,item.Header.ToString())) {
+                if (SearchBar.Match(searchTextBox.Text,((TextBlock)item.Header).Text.ToString())) {
                     filterItems.Add(item);
                 }
             }
             if (filterItems.Count > 0)
                 filterItems[0].IsSelected = true;
+
+        }
+
+        private void TreeView_MouseUp(object sender, MouseButtonEventArgs e)
+        {
 
         }
     }

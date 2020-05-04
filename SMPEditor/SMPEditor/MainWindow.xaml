@@ -18,7 +18,7 @@
             <ColumnDefinition Width="498*"/>
         </Grid.ColumnDefinitions>
         <TextBox x:Name="textBox" Margin="10.347,10.485,9.713,2.901" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Grid.Column="1" Grid.Row="1"/>
-        <CustomControls:MultiSelectTreeView x:Name="treeView" Margin="10,10.485,9.653,2.901" SelectedItemChanged="TreeView_SelectedItemChanged" Grid.Row="1"/>
+        <CustomControls:MultiSelectTreeView x:Name="treeView" Margin="10,10.485,9.653,2.901" SelectedItemChanged="TreeView_SelectedItemChanged" Grid.Row="1" MouseUp="TreeView_MouseUp" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"/>
         <Button x:Name="clear_btn" Content="clear" Margin="10.347,0,182.713,0" VerticalAlignment="Center" Click="Clear_btn_Click" Grid.Column="1" Grid.Row="2" Height="22"/>
         <CustomControls:PathSelector x:Name="NifSelector" Height="23" Margin="10,0" VerticalAlignment="Center" Width="Auto" DropTypes="nif" label="NifFile:" TextChanged="NifSelector_TextChanged" Grid.Column="1"/>
         <Grid Margin="0,0.099,2.653,0.119" Grid.Row="2">
