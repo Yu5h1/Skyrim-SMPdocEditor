@@ -28,8 +28,9 @@ namespace SMPEditor
 
         public MainWindow()
         {
-            
             InitializeComponent();
+
+
         }
         TreeViewItem CreateTreeNodes(NiHeader hdr, int nodeIndex) {
             if (nodeIndex >= hdr.blocks.Length) {
@@ -47,17 +48,11 @@ namespace SMPEditor
             }
 
             TreeViewItem branch = new TreeViewItem();
-            var textblock = new TextBlock() { Text = hdr.GetNiNodeName(nodeIndex) };
-            textblock.Tag = branch;
-            branch.Header = textblock;
-            textblock.MouseUp += (s, e) =>
-            {
-                if (InputEx.KeysDown(Key.LeftCtrl, Key.LeftShift))
-                {
-                    var treeNode = ((TextBlock)s).Tag as TreeViewItem;
-                    treeView.SelectAllChildren(treeNode, true);
-                }
+            var textbox = new TextBlock() {
+                Text = hdr.GetNiNodeName(nodeIndex),
             };
+            branch.Header = textbox;
+
 
             if (node != null && node.children.Length > 0)
             {
@@ -222,45 +217,17 @@ namespace SMPEditor
             return ele;
         }
 
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-
-        }
-
         private void Clear_btn_Click(object sender, RoutedEventArgs e)
         {
             textBox.Text = "";
         }
 
-        public static bool Match(string searchText, string target)
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (searchText == "" || searchText == null) return true;
-            string[] searchTextDatas = searchText.Split('_', ' ');
-            for (int i = 0; i < searchTextDatas.Length; i++)
-                if (!target.ToLower().Contains(searchTextDatas[i].ToLower())) return false;
-            return true;
-        }
-
-        List<TreeViewItem> filterItems = new List<TreeViewItem>();
-
-        private void TextBox1_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            filterItems.Clear();
-
-            foreach (var item in treeView.GetAllTreeViewItems(true))
-            {
-                if (SearchBar.Match(searchTextBox.Text,((TextBlock)item.Header).Text.ToString())) {
-                    filterItems.Add(item);
-                }
-            }
-            if (filterItems.Count > 0)
-                filterItems[0].IsSelected = true;
-
-        }
-
-        private void TreeView_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-
+            treeView.ShowItems(searchTextBox.Text, (item) => {
+                var tb = item.Header as TextBlock;
+                return tb.Text;
+            });
         }
     }
 }

@@ -18,9 +18,9 @@
             <ColumnDefinition Width="498*"/>
         </Grid.ColumnDefinitions>
         <TextBox x:Name="textBox" Margin="10.347,10.485,9.713,2.901" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Grid.Column="1" Grid.Row="1"/>
-        <CustomControls:MultiSelectTreeView x:Name="treeView" Margin="10,10.485,9.653,2.901" SelectedItemChanged="TreeView_SelectedItemChanged" Grid.Row="1" MouseUp="TreeView_MouseUp" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"/>
+        <CustomControls:MultiSelectTreeView x:Name="treeView" Margin="10,10.485,9.653,2.901" Grid.Row="1" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"/>
         <Button x:Name="clear_btn" Content="clear" Margin="10.347,0,182.713,0" VerticalAlignment="Center" Click="Clear_btn_Click" Grid.Column="1" Grid.Row="2" Height="22"/>
-        <CustomControls:PathSelector x:Name="NifSelector" Height="23" Margin="10,0" VerticalAlignment="Center" Width="Auto" DropTypes="nif" label="NifFile:" TextChanged="NifSelector_TextChanged" Grid.Column="1"/>
+        <CustomControls:PathSelector x:Name="NifSelector" Height="23" Margin="10,0" VerticalAlignment="Center" Width="Auto" label="NifFile:" TextChanged="NifSelector_TextChanged" Grid.Column="1" FileFilter="Nif File|*.nif"/>
         <Grid Margin="0,0.099,2.653,0.119" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*"/>
@@ -35,7 +35,7 @@
                 <System:String>generic-constraint(Horizontal)</System:String>
             </ComboBox>
         </Grid>
-        <TextBox x:Name="searchTextBox" Margin="58,3,9.653,2.515" TextChanged="TextBox1_TextChanged" IsEnabled="False" Text="WORK IN PROGRESS"/>
+        <TextBox x:Name="searchTextBox" Margin="58,3,9.653,2.515" Text="WORK IN PROGRESS" TextChanged="SearchTextBox_TextChanged"/>
         <Label x:Name="label" Content="Filter:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="43" Padding="0"/>
         <Label x:Name="label1" Content="Development Version" Grid.Column="1" Margin="0,0,9.713,0" Grid.Row="2" FontWeight="Bold" VerticalAlignment="Center" Width="136" HorizontalAlignment="Right"/>
     </Grid>
