@@ -35,7 +35,7 @@
                 <System:String>generic-constraint(Horizontal)</System:String>
             </ComboBox>
         </Grid>
-        <TextBox x:Name="searchTextBox" Margin="58,3,9.653,2.515" Text="WORK IN PROGRESS" TextChanged="SearchTextBox_TextChanged"/>
+        <TextBox x:Name="searchTextBox" Margin="58,3,9.653,2.515"/>
         <Label x:Name="label" Content="Filter:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="43" Padding="0"/>
         <Label x:Name="label1" Content="Development Version" Grid.Column="1" Margin="0,0,9.713,0" Grid.Row="2" FontWeight="Bold" VerticalAlignment="Center" Width="136" HorizontalAlignment="Right"/>
     </Grid>

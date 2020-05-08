@@ -30,8 +30,24 @@ namespace SMPEditor
         {
             InitializeComponent();
 
-
+            searchTextBox.TextChanged += SearchTextBox_TextChanged;
+            searchTextBox.KeyUp += SearchTextBox_KeyUp;
         }
+
+        private void SearchTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape) searchTextBox.Text = "";
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            treeView.ShowItems(searchTextBox.Text, (item) => {
+                var tb = item.Header as TextBlock;
+                tb.HighLight(searchTextBox.Text, Brushes.Yellow, Brushes.Black);
+                return tb.Text;
+            });
+        }
+
         TreeViewItem CreateTreeNodes(NiHeader hdr, int nodeIndex) {
             if (nodeIndex >= hdr.blocks.Length) {
                 MessageBox.Show("Node ("+nodeIndex.ToString()+") out of range.");
@@ -48,11 +64,12 @@ namespace SMPEditor
             }
 
             TreeViewItem branch = new TreeViewItem();
-            var textbox = new TextBlock() {
+            var textBlock = new TextBlock() {
                 Text = hdr.GetNiNodeName(nodeIndex),
             };
-            branch.Header = textbox;
-
+            textBlock.IsHitTestVisible = false;
+            branch.Header = textBlock;
+            
 
             if (node != null && node.children.Length > 0)
             {
@@ -220,14 +237,6 @@ namespace SMPEditor
         private void Clear_btn_Click(object sender, RoutedEventArgs e)
         {
             textBox.Text = "";
-        }
-
-        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            treeView.ShowItems(searchTextBox.Text, (item) => {
-                var tb = item.Header as TextBlock;
-                return tb.Text;
-            });
         }
     }
 }
