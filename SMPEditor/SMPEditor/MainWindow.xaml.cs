@@ -86,12 +86,12 @@ namespace SMPEditor
             slider.GotMouseCapture += (s, e) => {
                 comboBox.SelectedIndex = comboBox.Items.IndexOf(panel);
                 var toolTip = (ToolTip)slider.ToolTip;
-                toolTip.StaysOpen = true;
+                //toolTip.StaysOpen = true;
                 toolTip.IsOpen = true;
             };
             slider.LostMouseCapture += (s, e) => {
                 var toolTip = (ToolTip)slider.ToolTip;
-                toolTip.StaysOpen = false;
+                //toolTip.StaysOpen = false;
                 toolTip.IsOpen = false;
             };
             panel.Children.Add(slider);
