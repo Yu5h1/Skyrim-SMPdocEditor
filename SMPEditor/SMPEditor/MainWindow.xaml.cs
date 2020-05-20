@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using static Yu5h1Tools.DevelopmentKit.InformationViewer;
+using static InformationViewer;
 using System.Xml.Linq;
 using NiDump;
 using Int32 = System.Int32;
@@ -32,6 +32,70 @@ namespace SMPEditor
 
             searchTextBox.TextChanged += SearchTextBox_TextChanged;
             searchTextBox.KeyUp += SearchTextBox_KeyUp;
+
+            comboBox.Items.Add(CreateSlideItem("bone"));
+            //comboBox.Items.Add("bone-default");
+            comboBox.Items.Add(CreateSlideItem("weight-threshold",0.01));
+            comboBox.Items.Add("generic-constraint");
+            comboBox.Items.Add("generic-constraint-default");
+            comboBox.Items.Add("generic-constraint(Horizontal)");
+
+            //var btn = Add_btn;
+            //btn.Content = "Created with C#";
+            //var contextmenu = new ContextMenu();
+            //btn.ContextMenu = contextmenu;
+            //var mi = new MenuItem();
+            //mi.Header = "File";
+            //var mia = new MenuItem();
+            //mia.Header = "New";
+            //mi.Items.Add(mia);
+            //var mib = new MenuItem();
+            //mib.Header = "Open";
+            //mi.Items.Add(mib);
+            //var mib1 = new MenuItem();
+            //mib1.Header = "Recently Opened";
+            //mib.Items.Add(mib1);
+            //var mib1a = new MenuItem();
+            //mib1a.Header = "Text.xaml";
+            //mib1.Items.Add(mib1a);
+            //contextmenu.Items.Add(mi);
+
+        }
+        StackPanel CreateSlideItem(string name,double sc = 0.1) {
+            StackPanel panel = new StackPanel() {
+                Height = 16,
+            };
+            panel.Orientation = Orientation.Horizontal;
+            panel.Children.Add(new Label() {
+                Content = name,
+                Padding = new Thickness(),
+                Margin = new Thickness(0,0,10,0)
+            });
+            var slider = new Slider()
+            {
+                Height = 16,
+                Width = 100,
+                Minimum = 0,
+                Maximum = 1,
+                SmallChange = sc,
+                ToolTip = new ToolTip() { Content = "0.0"}
+            };
+            slider.ValueChanged += (sender, e) => {
+                ((ToolTip)slider.ToolTip).Content = slider.Value.ToString("0.0");
+            };
+            slider.GotMouseCapture += (s, e) => {
+                comboBox.SelectedIndex = comboBox.Items.IndexOf(panel);
+                var toolTip = (ToolTip)slider.ToolTip;
+                toolTip.StaysOpen = true;
+                toolTip.IsOpen = true;
+            };
+            slider.LostMouseCapture += (s, e) => {
+                var toolTip = (ToolTip)slider.ToolTip;
+                toolTip.StaysOpen = false;
+                toolTip.IsOpen = false;
+            };
+            panel.Children.Add(slider);
+            return panel;
         }
 
         private void SearchTextBox_KeyUp(object sender, KeyEventArgs e)
@@ -128,16 +192,41 @@ namespace SMPEditor
         }
         private void Add_btn_Click(object sender, RoutedEventArgs e)
         {
-          
+            XElement xele;
             string result = "";
-            switch (comboBox.SelectedItem.ToString())
+            var selectedItemName = comboBox.SelectedItem.ToString();
+            StackPanel stackPanel = null;
+            Slider slider = null;
+            if (comboBox.SelectedItem.GetType() == typeof(StackPanel)) {
+                stackPanel = comboBox.SelectedItem as StackPanel;
+                selectedItemName = ((Label)stackPanel.Children[0]).Content.ToString();
+                slider = stackPanel.Children[1] as Slider;
+            }
+            switch (selectedItemName)
             {
                 case "bone":
-                    if (treeView.SelectedItem == null) return;
+                    if ((treeView.SelectedItem == null).showWarnning("Select a bone")) return;
                     foreach (var node in selectedNodes)
                     {
-                        XElement xele = new XElement("bone");
-                        xele.SetAttributeValue("name", ((TextBlock)node.Header).Text);
+                        xele = new XElement("bone");
+                        xele.SetAttributeValue("name", ((TextBlock)node.Header).Text);                        
+                        result += xele.ToString() + "\n";
+                    }
+                    if (slider.Value > 0)
+                    {
+                        xele = new XElement("bone-default");
+                        XElement mml = new XElement("margin-multiplier");
+                        mml.SetValue(slider.Value.ToString("0.0"));
+                        xele.Add(mml);
+                        result += xele.ToString() + "\n";
+                    }
+                    break;
+                case "weight-threshold":
+                    foreach (var node in selectedNodes)
+                    {
+                        xele = new XElement("weight-threshold");
+                        xele.SetAttributeValue("bone", ((TextBlock)node.Header).Text);
+                        xele.SetValue(slider.Value.ToString("0.0"));
                         result += xele.ToString() + "\n";
                     }
                     break;

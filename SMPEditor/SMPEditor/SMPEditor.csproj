@@ -52,7 +52,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Yu5h1Tools\Yu5h1Tools.DevelopmentKit\Yu5h1Tools.DevelopmentKit\bin\Release\Yu5h1Tools.DevelopmentKit.dll</HintPath>
     </Reference>
-    <Reference Include="Yu5h1Tools.WPFExtension">
+    <Reference Include="Yu5h1Tools.WPFExtension, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Yu5h1Tools\WPFExtension\Yu5h1Tools.WPFExtension\bin\Release\Yu5h1Tools.WPFExtension.dll</HintPath>
     </Reference>
   </ItemGroup>

@@ -4,6 +4,6 @@
     <StartArguments>"C:\Users\Yushi\Documents\Visual Studio 2017\Projects\SkyrimTools\niflib\nidump-opparco\Skyrim-SMPdocEditor\SMPEditor\SMPEditor\bin\Release\skirt_0.nif"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <StartArguments>"C:\Users\Yushi\Documents\Visual Studio 2017\Projects\SkyrimTools\niflib\nidump-opparco\Skyrim-SMPdocEditor\SMPEditor\SMPEditor\bin\Release\skirt_0.nif"</StartArguments>
+    <StartArguments>"C:\Users\Yushi\Documents\Visual Studio 2017\Projects\SkyrimTools\niflib\nidump-opparco\Skyrim-SMPdocEditor\SMPEditor\SMPEditor\bin\Release\Package\skirt_0.nif"</StartArguments>
   </PropertyGroup>
 </Project>
